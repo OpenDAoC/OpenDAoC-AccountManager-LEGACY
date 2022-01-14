@@ -16,7 +16,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $username_err = "Username can only contain letters, numbers, and underscores.";
     } else{
         // Prepare a select statement
-        $sql = "SELECT Account_ID FROM account WHERE Name = ?";
+        $sql = "SELECT Name FROM account WHERE Name = ?";
 
         if($stmt = mysqli_prepare($link, $sql)){
             // Bind variables to the prepared statement as parameters
@@ -48,7 +48,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     if(empty(trim($_POST["password"]))){
         $password_err = "Please enter a password.";
     } elseif(strlen(trim($_POST["password"])) < 6){
-        $password_err = "Password must have atleast 6 characters.";
+        $password_err = "Password must have at least 6 characters.";
     } else{
         $password = trim($_POST["password"]);
     }
@@ -71,7 +71,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
         if($stmt = mysqli_prepare($link, $sql)){
             // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "ss", $param_id,$param_username, $param_password);
+            mysqli_stmt_bind_param($stmt, "sss", $param_id,$param_username, $param_password);
 
             // Set parameters
             $param_id = $username;
