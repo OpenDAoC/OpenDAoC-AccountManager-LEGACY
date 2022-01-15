@@ -1,9 +1,5 @@
 <?php
 
-# Enabling error display
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
 
 # Including all the required scripts for demo
 require __DIR__ . "/includes/functions.php";
@@ -36,7 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Validate credentials
     if (empty($username_err) && empty($password_err)) {
         // Prepare a select statement
-        $sql = "SELECT Account_ID, Name, Password FROM account WHERE Name = ?";
+        $sql = "SELECT Account_ID, Name, Password, DiscordID FROM account WHERE Name = ?";
 
         if ($stmt = mysqli_prepare($link, $sql)) {
             // Bind variables to the prepared statement as parameters
@@ -53,7 +49,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // Check if username exists, if yes then verify password
                 if (mysqli_stmt_num_rows($stmt) == 1) {
                     // Bind result variables
-                    mysqli_stmt_bind_result($stmt, $id, $username, $hashed_password);
+                    mysqli_stmt_bind_result($stmt, $id, $username, $hashed_password, $discordID);
                     if (mysqli_stmt_fetch($stmt)) {
                         if (strcmp(cryptPassword($password), $hashed_password) == 0) {
                             // Password is correct, so start a new session
@@ -84,11 +80,80 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-
-    // Close connection
-    mysqli_close($link);
 }
 
+if ($_SERVER["REQUEST_METHOD"] == "GET") {
+
+    if (isset($_SESSION["username"])) {
+        // Prepare a select statement
+        $sql = "SELECT Name, DiscordID FROM account WHERE Name = ?";
+
+        if ($stmt = mysqli_prepare($link, $sql)) {
+            // Bind variables to the prepared statement as parameters
+            mysqli_stmt_bind_param($stmt, "s", $param_username);
+
+            // Set parameters
+            $param_username = $_SESSION["username"];
+
+            // Attempt to execute the prepared statement
+            if (mysqli_stmt_execute($stmt)) {
+                // Store result
+                mysqli_stmt_store_result($stmt);
+
+                // Check if username exists, if yes then verify password
+                if (mysqli_stmt_num_rows($stmt) == 1) {
+                    // Bind result variables
+                    mysqli_stmt_bind_result($stmt, $username, $discordID);
+                    if (mysqli_stmt_fetch($stmt)) {
+                        if ($discordID == "" || $discordID == null) {
+                            if (isset($_SESSION['user_id'])) {
+                                $sql2 = "UPDATE account SET DiscordID = ? WHERE Name = ?";
+
+                                if ($stmt2 = mysqli_prepare($link, $sql2)) {
+                                    // Bind variables to the prepared statement as parameters
+                                    mysqli_stmt_bind_param($stmt2, "ss", $param_discordID, $param_username);
+
+                                    // Set parameters
+                                    $param_discordID = $_SESSION['user_id'];
+                                    $param_username = $_SESSION["username"];
+
+                                    // Attempt to execute the prepared statement
+                                    if (mysqli_stmt_execute($stmt2)) {
+                                        // Discord linked successfully. Destroy the session, and redirect to login page
+                                        session_destroy();
+                                        header("location: index.php");
+                                        exit();
+                                    } else {
+                                        echo $_SESSION["username"];
+                                    }
+
+                                    // Close statement
+                                    mysqli_stmt_close($stmt2);
+                                }
+                            }
+                        }
+                    } else {
+                        // Username doesn't exist, display a generic error message
+                        $login_err = "Invalid username or password.";
+                    }
+                } else {
+                    echo "Oops! Something went wrong. Please try again later.";
+                }
+
+                // Close statement
+                mysqli_stmt_close($stmt);
+            }
+
+        };
+
+
+    }
+
+
+}
+
+// Close connection
+mysqli_close($link);
 ?>
 
 <html>
@@ -118,77 +183,74 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <div class="container">
     <div class="row">
 
-
-
-
-
-
         <div class="col-md-6 mx-auto">
-
             <?php if (isset($_SESSION['user_avatar'])) { ?>
                 <img src="https://cdn.discordapp.com/avatars/<?php $extention = is_animated($_SESSION['user_avatar']);
-                echo $_SESSION['user_id'] . "/" . $_SESSION['user_avatar'] . $extention; ?>" class="rounded-circle mx-auto d-block avatar" style="width: 100px; height: 100px;">
+                echo $_SESSION['user_id'] . "/" . $_SESSION['user_avatar'] . $extention; ?>"
+                     class="rounded-circle mx-auto d-block avatar" style="width: 100px; height: 100px;">
             <?php } ?>
 
-<h1 class="my-3" style="text-align: center;">Hi<?php if (isset($_SESSION['username'])) {
-        echo ", <b>" . htmlspecialchars($_SESSION["username"]) . "</b>";
-    }
-    if (isset($_SESSION['discord_username'])) {
-        echo " (" . $_SESSION['discord_username'] . '#' . $_SESSION['discrim'] . ")";
-    } ?>!</h1>
+            <h1 class="my-3" style="text-align: center;">Hi<?php if (isset($_SESSION['username'])) {
+                    echo ", <b>" . htmlspecialchars($_SESSION["username"]) . "</b>";
+                }
+                if (isset($_SESSION['discord_username'])) {
+                    echo " (" . $_SESSION['discord_username'] . '#' . $_SESSION['discrim'] . ")";
+                } ?>!</h1>
 
 
+            <?php if (!isset($_SESSION['username'])) { ?>
 
-<?php if (!isset($_SESSION['username'])) { ?>
+                <h2>Login</h2>
+                <p>Please fill in your credentials to login.</p>
 
-        <h2>Login</h2>
-        <p>Please fill in your credentials to login.</p>
+                <?php
+                if (!empty($login_err)) {
+                    echo '<div class="alert alert-danger">' . $login_err . '</div>';
+                }
+                ?>
 
-        <?php
-        if (!empty($login_err)) {
-            echo '<div class="alert alert-danger">' . $login_err . '</div>';
-        }
-        ?>
+                <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" name="username"
+                               class="form-control <?php echo (!empty($username_err)) ? 'is-invalid' : ''; ?>"
+                               value="<?php echo $username; ?>">
+                        <span class="invalid-feedback"><?php echo $username_err; ?></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" name="password"
+                               class="form-control <?php echo (!empty($password_err)) ? 'is-invalid' : ''; ?>">
+                        <span class="invalid-feedback"><?php echo $password_err; ?></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" class="btn btn-primary" value="Login">
+                    </div>
+                </form>
 
-        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-            <div class="form-group">
-                <label>Username</label>
-                <input type="text" name="username"
-                       class="form-control <?php echo (!empty($username_err)) ? 'is-invalid' : ''; ?>"
-                       value="<?php echo $username; ?>">
-                <span class="invalid-feedback"><?php echo $username_err; ?></span>
-            </div>
-            <div class="form-group">
-                <label>Password</label>
-                <input type="password" name="password"
-                       class="form-control <?php echo (!empty($password_err)) ? 'is-invalid' : ''; ?>">
-                <span class="invalid-feedback"><?php echo $password_err; ?></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" class="btn btn-primary" value="Login">
-            </div>
-        </form>
+            <?php } else { ?>
+                <div class="center">
 
-<?php } else { ?>
-    <div class="center">
+                    <a href="reset-password.php" class="btn btn-warning mx-auto" style="margin: 10px">Reset Your
+                        Password</a>
 
-        <a href="reset-password.php" class="btn btn-warning mx-auto" style="margin: 10px">Reset Your Password</a>
+                    <a href="includes/logout.php" class="btn btn-danger ml-3 mx-auto">Logout</a>
 
-        <a href="includes/logout.php" class="btn btn-danger ml-3 mx-auto">Sign Out of Your Account</a>
+                </div>
 
+            <?php } ?>
+
+            <?php if (!isset($_SESSION['discord_username']) && isset($_SESSION['username'])) { ?>
+                <div style="margin-top: 50px;" class="center">
+                    <a href="<?php echo $auth_url ?>">
+                        <button class='btn log-in'>Connect Discord</button>
+                    </a>
+                </div>
+            <?php } ?>
+
+        </div>
     </div>
-
-<?php } ?>
-
-<?php if (!isset($_SESSION['discord_username']) && isset($_SESSION['username'])) { ?>
-<div style="margin-top: 50px;" class="center">
-    <a href="<?php echo $auth_url ?>">
-        <button class='btn log-in'>Connect Discord</button>
-    </a>
 </div>
-<?php } ?>
-
-        </div></div></div>
 
 </body>
 

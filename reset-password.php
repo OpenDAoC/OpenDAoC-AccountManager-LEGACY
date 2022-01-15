@@ -93,9 +93,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="row">
         <div class="col-md-6 mx-auto">
 
-            <h1 class="my-3 center" >Password reset for <?php echo $_SESSION["username"]; ?></h1>
+            <h1 class="my-3 center">Password reset for <?php echo $_SESSION["username"]; ?></h1>
 
-            <p class="center">Please fill out this form to reset your password.</br>
+            <p class="center">Please fill out this form to reset your password.<br>
                 <small>You may be required to login again with your new password.</small></p>
 
             <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
