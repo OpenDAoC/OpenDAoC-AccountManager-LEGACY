@@ -55,6 +55,10 @@ header {
 	text-align: center;
 }
 
+.avatar {
+	margin-top: 20px;
+}
+
 .response-block {
 	margin: 15px;
 	padding: .5em;

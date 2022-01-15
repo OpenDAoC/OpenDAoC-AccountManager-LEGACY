@@ -117,15 +117,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <div class="container">
     <div class="row">
+
+
+
+
+
+
         <div class="col-md-6 mx-auto">
 
+            <?php if (isset($_SESSION['user_avatar'])) { ?>
+                <img src="https://cdn.discordapp.com/avatars/<?php $extention = is_animated($_SESSION['user_avatar']);
+                echo $_SESSION['user_id'] . "/" . $_SESSION['user_avatar'] . $extention; ?>" class="rounded-circle mx-auto d-block avatar" style="width: 100px; height: 100px;">
+            <?php } ?>
 
-<h1 class="my-5" style="text-align: center;">Hi<?php if (isset($_SESSION['username'])) {
+<h1 class="my-3" style="text-align: center;">Hi<?php if (isset($_SESSION['username'])) {
         echo ", <b>" . htmlspecialchars($_SESSION["username"]) . "</b>";
     }
     if (isset($_SESSION['discord_username'])) {
         echo " (" . $_SESSION['discord_username'] . '#' . $_SESSION['discrim'] . ")";
     } ?>!</h1>
+
+
 
 <?php if (!isset($_SESSION['username'])) { ?>
 
