@@ -240,7 +240,7 @@ mysqli_close($link);
 
             <?php } ?>
 
-            <?php if (!isset($_SESSION['discord_username']) && isset($_SESSION['username'])) { ?>
+            <?php if ($discordID == null && isset($_SESSION['username'])) { ?>
                 <div style="margin-top: 50px;" class="center">
                     <a href="<?php echo $auth_url ?>">
                         <button class='btn log-in'>Connect Discord</button>
