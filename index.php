@@ -86,7 +86,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
 
     if (isset($_SESSION["username"])) {
         // Prepare a select statement
-        $sql = "SELECT Name, DiscordID FROM account WHERE Name = ?";
+        $sql = "SELECT Name, DiscordID, DiscordName FROM account WHERE Name = ?";
 
         if ($stmt = mysqli_prepare($link, $sql)) {
             // Bind variables to the prepared statement as parameters
@@ -103,18 +103,19 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
                 // Check if username exists, if yes then verify password
                 if (mysqli_stmt_num_rows($stmt) == 1) {
                     // Bind result variables
-                    mysqli_stmt_bind_result($stmt, $username, $discordID);
+                    mysqli_stmt_bind_result($stmt, $username, $discordID, $discordName);
                     if (mysqli_stmt_fetch($stmt)) {
-                        if ($discordID == "" || $discordID == null) {
+                        if ($discordID == "" || $discordID == null || $discordName == "" || $discordName == null) {
                             if (isset($_SESSION['user_id'])) {
-                                $sql2 = "UPDATE account SET DiscordID = ? WHERE Name = ?";
+                                $sql2 = "UPDATE account SET DiscordID = ?, DiscordName = ? WHERE Name = ?";
 
                                 if ($stmt2 = mysqli_prepare($link, $sql2)) {
                                     // Bind variables to the prepared statement as parameters
-                                    mysqli_stmt_bind_param($stmt2, "ss", $param_discordID, $param_username);
+                                    mysqli_stmt_bind_param($stmt2, "sss", $param_discordID, $param_discordName, $param_username);
 
                                     // Set parameters
                                     $param_discordID = $_SESSION['user_id'];
+                                    $param_discordName = $_SESSION['discord_username'] . '#' . $_SESSION['discrim'];
                                     $param_username = $_SESSION["username"];
 
                                     // Attempt to execute the prepared statement
@@ -184,17 +185,12 @@ mysqli_close($link);
     <div class="row">
 
         <div class="col-md-6 mx-auto">
-            <?php if (isset($_SESSION['user_avatar'])) { ?>
-                <img src="https://cdn.discordapp.com/avatars/<?php $extention = is_animated($_SESSION['user_avatar']);
-                echo $_SESSION['user_id'] . "/" . $_SESSION['user_avatar'] . $extention; ?>"
-                     class="rounded-circle mx-auto d-block avatar" style="width: 100px; height: 100px;">
-            <?php } ?>
 
             <h1 class="my-3" style="text-align: center;">Hi<?php if (isset($_SESSION['username'])) {
                     echo ", <b>" . htmlspecialchars($_SESSION["username"]) . "</b>";
                 }
-                if (isset($_SESSION['discord_username'])) {
-                    echo " (" . $_SESSION['discord_username'] . '#' . $_SESSION['discrim'] . ")";
+                if ($discordName != null) {
+                    echo " (" . $discordName . ")";
                 } ?>!</h1>
 
 
@@ -240,7 +236,7 @@ mysqli_close($link);
 
             <?php } ?>
 
-            <?php if ($discordID == null && isset($_SESSION['username'])) { ?>
+            <?php if (($discordID == null || $discordName == null) && isset($_SESSION['username'])) { ?>
                 <div style="margin-top: 50px;" class="center">
                     <a href="<?php echo $auth_url ?>">
                         <button class='btn log-in'>Connect Discord</button>
