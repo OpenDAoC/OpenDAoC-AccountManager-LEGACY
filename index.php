@@ -102,7 +102,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 
 <body>
-<header><span class="logo">Atlas - Account Manager</span>
+<header><span class="logo">Atlas Account Manager</span>
     <span class="menu">
 			<?php
             $auth_url = url($client_id, $redirect_url, $scopes);
@@ -170,17 +170,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </form>
 
 <?php } else { ?>
-    <div style="text-align: center;">
+    <div class="center">
 
-        <a href="reset-password.php" class="btn btn-warning">Reset Your Password</a>
-        <a href="includes/logout.php" class="btn btn-danger ml-3">Sign Out of Your Account</a>
+        <a href="reset-password.php" class="btn btn-warning mx-auto" style="margin: 10px">Reset Your Password</a>
+
+        <a href="includes/logout.php" class="btn btn-danger ml-3 mx-auto">Sign Out of Your Account</a>
 
     </div>
 
 <?php } ?>
 
 <?php if (!isset($_SESSION['discord_username']) && isset($_SESSION['username'])) { ?>
-<div style="text-align: center; margin-top: 50px;">
+<div style="margin-top: 50px;" class="center">
     <a href="<?php echo $auth_url ?>">
         <button class='btn log-in'>Connect Discord</button>
     </a>

@@ -77,7 +77,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 
 <body>
-<header><span class="logo">Atlas - Account Manager</span>
+<header><span class="logo">Atlas Account Manager</span>
     <span class="menu">
 			<?php
 
