@@ -129,7 +129,7 @@ if (!isset($_SESSION['user'])) {
 
 ?>
 
-<?php if ($gameAccount == null){ ?>
+<?php if ($gameAccount == null && isset($_SESSION['user'])){ ?>
 
 <p class = "center">Login with your game account to link with Discord</p>
 
@@ -158,7 +158,7 @@ if (!empty($login_err)) {
     </div>
 </form>
 <?php }
-else { ?>
+else if ($gameAccount != null && isset($_SESSION['user'])){ ?>
     <div class="center">
 
         <a href="reset-password.php" class="btn btn-warning mx-auto" style="margin: 10px">Reset Your
