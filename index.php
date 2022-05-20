@@ -6,7 +6,7 @@ ini_set('display_errors', 1);
 
 $username = $password = "";
 $username_err = $password_err = $login_err = "";
-
+$gameAccount = "";
 # Including all the required scripts for demo
 require __DIR__ . "/includes/functions.php";
 require __DIR__ . "/includes/discord.php";
@@ -61,9 +61,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             $_SESSION["loggedin"] = true;
                             $_SESSION["id"] = $id;
                             $_SESSION["username"] = $username;
+                            linkDiscord($username);
+                            setDiscordName($username);
 
                             // Redirect user to welcome page
-                            header("location: index.php");
+//                            header("location: index.php");
+                            header("Refresh:1");
+
                         } else {
                             // Password is not valid, display a generic error message
                             $login_err = "Invalid username or password.";
@@ -86,40 +90,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 // Close connection
 mysqli_close($link);
-
-function getGameAccount(string $DiscordID){
-    $link = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
-    $sql = "SELECT Name FROM account WHERE DiscordID = ?";
-
-    if ($stmt = mysqli_prepare($link, $sql)) {
-        // Bind variables to the prepared statement as parameters
-        mysqli_stmt_bind_param($stmt, "s", $param_DiscordID);
-
-        // Set parameters
-        $param_DiscordID = $DiscordID;
-
-        // Attempt to execute the prepared statement
-        if (mysqli_stmt_execute($stmt)) {
-            // Store result
-            mysqli_stmt_store_result($stmt);
-
-            // Check if username exists, if yes then verify password
-            if (mysqli_stmt_num_rows($stmt) == 1) {
-                // Bind result variables
-                mysqli_stmt_bind_result($stmt, $gameAccount);
-                if (mysqli_stmt_fetch($stmt)) {
-                    return $gameAccount;
-                }
-            } else {
-                return "";
-            }
-
-            // Close statement
-            mysqli_stmt_close($stmt);
-        }
-    }
-    mysqli_close($link);
-}
 
 ?>
 

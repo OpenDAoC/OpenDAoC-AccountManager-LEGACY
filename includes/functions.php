@@ -70,6 +70,118 @@ function cryptPassword($pass)
 	return $crypted;
 }
 
+// Getting the GameAccount
+function getGameAccount(string $DiscordID){
+    $link = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
+    $sql = "SELECT Name FROM account WHERE DiscordID = ?";
+
+    if ($stmt = mysqli_prepare($link, $sql)) {
+        // Bind variables to the prepared statement as parameters
+        mysqli_stmt_bind_param($stmt, "s", $param_DiscordID);
+
+        // Set parameters
+        $param_DiscordID = $DiscordID;
+
+        // Attempt to execute the prepared statement
+        if (mysqli_stmt_execute($stmt)) {
+            // Store result
+            mysqli_stmt_store_result($stmt);
+
+            // Check if username exists, if yes then verify password
+            if (mysqli_stmt_num_rows($stmt) == 1) {
+                // Bind result variables
+                mysqli_stmt_bind_result($stmt, $gameAccount);
+                if (mysqli_stmt_fetch($stmt)) {
+                    return $gameAccount;
+                }
+            } else {
+                return "";
+            }
+
+            // Close statement
+            mysqli_stmt_close($stmt);
+        }
+    }
+    mysqli_close($link);
+}
+
+function linkDiscord(string $gameAccount){
+    $link = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
+    $sql = "UPDATE account SET DiscordID = ? WHERE Name = ?";
+
+    if ($stmt = mysqli_prepare($link, $sql)) {
+        // Bind variables to the prepared statement as parameters
+        mysqli_stmt_bind_param($stmt, "ss", $param_discord, $param_username);
+
+        // Set parameters
+        $param_username = $gameAccount;
+        $param_discord = $_SESSION['user_id'];
+        // Attempt to execute the prepared statement
+        if (mysqli_stmt_execute($stmt)) {
+            // Password updated successfully. Destroy the session, and redirect to login page
+            session_destroy();
+            header("location: index.php");
+            exit();
+        } else {
+            echo $_SESSION["username"];
+        }
+
+        // Close statement
+        mysqli_stmt_close($stmt);
+    }
+
+    $sql = "UPDATE account SET DiscordName = ? WHERE Name = ?";
+
+    if ($stmt = mysqli_prepare($link, $sql)) {
+        // Bind variables to the prepared statement as parameters
+        mysqli_stmt_bind_param($stmt, "ss", $param_discord, $param_username);
+
+        // Set parameters
+        $param_discord = $_SESSION['user']['username'] . '#' . $_SESSION['discrim'];
+        // Attempt to execute the prepared statement
+        if (mysqli_stmt_execute($stmt)) {
+            // Password updated successfully. Destroy the session, and redirect to login page
+            session_destroy();
+            header("location: index.php");
+            exit();
+        } else {
+            echo $_SESSION["username"];
+        }
+
+        // Close statement
+        mysqli_stmt_close($stmt);
+    }
+
+    mysqli_close($link);
+}
+
+function setDiscordName(string $gameAccount){
+    $link = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
+    $sql = "UPDATE account SET DiscordName = ? WHERE Name = ?";
+    $discordName = $_SESSION['user']['username'] . '#' . $_SESSION['discrim'];
+
+    if ($stmt = mysqli_prepare($link, $sql)) {
+        // Bind variables to the prepared statement as parameters
+        mysqli_stmt_bind_param($stmt, "ss", $param_discord, $param_username);
+
+        // Set parameters
+        $param_discord = $discordName;
+        // Attempt to execute the prepared statement
+        if (mysqli_stmt_execute($stmt)) {
+            // Password updated successfully. Destroy the session, and redirect to login page
+            session_destroy();
+            header("location: index.php");
+            exit();
+        } else {
+            echo $_SESSION["username"];
+        }
+
+        // Close statement
+        mysqli_stmt_close($stmt);
+    }
+
+    mysqli_close($link);
+}
 
 class DotEnv
 {
