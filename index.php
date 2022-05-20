@@ -117,48 +117,51 @@ mysqli_close($link);
 		</span>
 </header>
 <?php
-if (!isset($_SESSION['user'])) {
-    echo "<br></brt><h3 class='center'>Login with Discord via the top-right button first. </h3><br/>";
-} else {
-    echo "<br></brt><h3 class='center'>Welcome, " . $_SESSION['user']['username'] . '#' . $_SESSION['discrim'] . "!</h3><br/>";
-    $gameAccount = getGameAccount($_SESSION['user_id']);
+if (!isset($_SESSION['user'])) {?>
+    <br><h3 class='center'>Login with Discord via the top-right button first. </h3><br/>
+<?php } else { ?>
+    <br><h3 class='center'><?php echo "Welcome, " . $_SESSION['user']['username'] . '#' . $_SESSION['discrim'] . '!'?></h3><br/>
+    <?php $gameAccount = getGameAccount($_SESSION['user_id']);
     if ($gameAccount != null) {
-        echo "<p class='center'>Your linked game account is: <b>" . $gameAccount . "</b></p>";
-    }
+        echo "<p class='center'>Your linked game account is: <b>$gameAccount</b></p>";
+     }
 }
-
 ?>
 
 <?php if ($gameAccount == null && isset($_SESSION['user'])){ ?>
 
-<p class = "center">Login with your game account to link with Discord</p>
+    if (!empty($login_err)) {
+        echo '<div class="alert alert-danger">' . $login_err . '</div>';
+    }
+    ?>
+    <div class="row justify-content-start center">
+        <div class="col-3"></div>
+        <div class="col-6">
+            <div class="alert alert-warning" role="alert">Login with your game account to link with Discord</div>
 
-<?php
-if (!empty($login_err)) {
-    echo '<div class="alert alert-danger">' . $login_err . '</div>';
-}
-?>
-
-<form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-    <div class="form-group">
-        <label>Username</label>
-        <input type="text" name="username"
-               class="form-control <?php echo (!empty($username_err)) ? 'is-invalid' : ''; ?>"
-               value="<?php echo $username; ?>">
-        <span class="invalid-feedback"><?php echo $username_err; ?></span>
+            <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" name="username"
+                           class="form-control <?php echo (!empty($username_err)) ? 'is-invalid' : ''; ?>"
+                           value="<?php echo $username; ?>">
+                    <span class="invalid-feedback"><?php echo $username_err; ?></span>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" name="password"
+                           class="form-control <?php echo (!empty($password_err)) ? 'is-invalid' : ''; ?>">
+                    <span class="invalid-feedback"><?php echo $password_err; ?></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" class="btn btn-primary" value="Login">
+                </div>
+            </form>
+            <div class="col-3"></div>
+        </div>
     </div>
-    <div class="form-group">
-        <label>Password</label>
-        <input type="password" name="password"
-               class="form-control <?php echo (!empty($password_err)) ? 'is-invalid' : ''; ?>">
-        <span class="invalid-feedback"><?php echo $password_err; ?></span>
     </div>
-    <div class="form-group">
-        <input type="submit" class="btn btn-primary" value="Login">
-    </div>
-</form>
-<?php }
-else if ($gameAccount != null && isset($_SESSION['user'])){ ?>
+<?php } else if ($gameAccount != null && isset($_SESSION['user'])) { ?>
     <div class="center">
 
         <a href="reset-password.php" class="btn btn-warning mx-auto" style="margin: 10px">Reset Your
