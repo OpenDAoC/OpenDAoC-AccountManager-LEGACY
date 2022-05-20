@@ -137,7 +137,7 @@ if (!isset($_SESSION['user'])) {?>
     <div class="row justify-content-start center">
         <div class="col-3"></div>
         <div class="col-6">
-            <div class="alert alert-warning" role="alert">Login with your game account to link with Discord</div>
+            <div class="alert alert-warning" role="alert">Login with your game account to link with Discord<br>You will be required to login again.</div>
 
             <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                 <div class="form-group">
