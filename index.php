@@ -128,7 +128,7 @@ if (!isset($_SESSION['user'])) {?>
 }
 ?>
 
-<?php if ($gameAccount == null && isset($_SESSION['user'])){ ?>
+<?php if ($gameAccount == null && isset($_SESSION['user'])){
 
     if (!empty($login_err)) {
         echo '<div class="alert alert-danger">' . $login_err . '</div>';
