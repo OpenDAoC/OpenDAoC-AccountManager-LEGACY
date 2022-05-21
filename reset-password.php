@@ -95,8 +95,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             <h3 class="my-3 center">Password reset for <?php echo $_SESSION['user']['username'] . '#' . $_SESSION['discrim']; ?></h3>
 
-            <p class="center">Please fill out this form to reset your password.<br>
-                <small>You will be required to login again.</small></p>
+            <div class="alert alert-warning center" role="alert">Some special characters are known for breaking the client, please don't use <b>%</b>, <b>&</b> or spaces in your password.<br><small>You will be required to login again.</small></div>
 
             <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                 <div class="form-group">

@@ -137,7 +137,7 @@ if (!isset($_SESSION['user'])) {?>
     <div class="row justify-content-start center">
         <div class="col-3"></div>
         <div class="col-6">
-            <div class="alert alert-warning" role="alert">Login with your game account to link with Discord<br>You will be required to login again.</div>
+            <div class="alert alert-warning center" role="alert">Login with your game account to link with Discord<br><small>You will be required to login again.</small></div>
 
             <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                 <div class="form-group">
@@ -164,8 +164,7 @@ if (!isset($_SESSION['user'])) {?>
 <?php } else if ($gameAccount != null && isset($_SESSION['user'])) { ?>
     <div class="center">
 
-        <a href="reset-password.php" class="btn btn-warning mx-auto" style="margin: 10px">Reset Your
-            Password</a>
+        <a href="reset-password.php" class="btn btn-warning mx-auto" style="margin: 10px">Change Password</a>
     </div>
 
 <?php } ?>
