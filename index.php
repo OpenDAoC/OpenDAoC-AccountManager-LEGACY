@@ -157,9 +157,14 @@ if (!isset($_SESSION['user'])) {?>
                     <input type="submit" class="btn btn-primary" value="Login">
                 </div>
             </form>
+
+            Don't have an account? <br>
+            <a href="register.php" class="btn btn-success" role="button">Register here</a>
             <div class="col-3"></div>
         </div>
     </div>
+
+
     </div>
 <?php } else if ($gameAccount != null && isset($_SESSION['user'])) { ?>
     <div class="center">

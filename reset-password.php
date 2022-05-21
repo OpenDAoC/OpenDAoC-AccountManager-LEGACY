@@ -93,9 +93,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="row">
         <div class="col-md-6 mx-auto">
 
-            <h3 class="my-3 center">Password reset for <?php echo $_SESSION['user']['username'] . '#' . $_SESSION['discrim']; ?></h3>
+            <h3 class="my-3 center">Password Reset</h3>
+            <h5 class="my-3 center"><?php echo $_SESSION['user']['username'] . '#' . $_SESSION['discrim']; ?></h5>
 
-            <div class="alert alert-warning center" role="alert">Some special characters are known for breaking the client, please don't use <b>%</b>, <b>&</b> or spaces in your password.<br><small>You will be required to login again.</small></div>
+            <div class="alert alert-warning center" role="alert">Please don't use <b>%</b>, <b>&</b> or spaces in your password.<br><small>You will be required to login again.</small></div>
 
             <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                 <div class="form-group">
@@ -112,8 +113,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <span class="invalid-feedback"><?php echo $confirm_password_err; ?></span>
                 </div>
                 <div class="form-group center">
-                    <input type="submit" class="btn btn-primary" value="Change Password">
-                    <a class="btn btn-link ml-2" href="index.php">Cancel</a>
+                    <input type="submit" class="btn btn-warning" value="Change Password">
+                    <a class="btn btn-secondary" href="index.php">Cancel</a>
                 </div>
             </form>
 
