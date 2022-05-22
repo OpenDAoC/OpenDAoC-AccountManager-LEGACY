@@ -181,12 +181,11 @@ if (!isset($_SESSION['user'])) {?>
     $obj = json_decode($json);
 ?>
     <div class="row center">
-        <img src="<?php echo $obj[0]->url; ?>" alt="QoL cat" class="center qol-cat">
-    </div>
-    <div class="row center">
         <a href="reset-password.php" class="btn btn-warning mx-auto" style="margin: 10px">Change Password</a>
     </div>
-
+    <div class="row center">
+        <img src="<?php echo $obj[0]->url; ?>" alt="QoL cat" class="center qol-cat">
+    </div>
 
 <?php } ?>
 
