@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } elseif (str_contains(trim($_POST["new_password"]), "%")) {
         $new_password_err = "The new password cannot contain %.";
     } else {
-        $password = trim($_POST["new_password"]);
+        $new_password = trim($_POST["new_password"]);
     }
 
     // Validate confirm password
@@ -118,7 +118,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
                 <div class="form-group">
                     <label>Confirm Password</label>
-                    <input data-toggle="password" type="password" name="confirm_password"
+                    <input type="password" name="confirm_password" data-toggle="password"
                            class="form-control <?php echo (!empty($confirm_password_err)) ? 'is-invalid' : ''; ?>">
                     <span class="error-msg"><?php echo $confirm_password_err; ?></span>
                 </div>
