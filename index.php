@@ -166,11 +166,27 @@ if (!isset($_SESSION['user'])) {?>
 
 
     </div>
-<?php } else if ($gameAccount != null && isset($_SESSION['user'])) { ?>
-    <div class="center">
+<?php
+} else if ($gameAccount != null && isset($_SESSION['user'])) {
 
+    $opts = [
+        "http" => [
+            "method" => "GET",
+            "header" => "x-api-key: e0084554-0ee5-4687-aaf4-30b0a5f4b518"
+        ]
+    ];
+
+    $context = stream_context_create($opts);
+    $json = file_get_contents('https://api.thecatapi.com/v1/images/search?limit=1&size=small',false, $context);
+    $obj = json_decode($json);
+?>
+    <div class="row center">
+        <img src="<?php echo $obj[0]->url; ?>" alt="QoL cat" class="center qol-cat">
+    </div>
+    <div class="row center">
         <a href="reset-password.php" class="btn btn-warning mx-auto" style="margin: 10px">Change Password</a>
     </div>
+
 
 <?php } ?>
 

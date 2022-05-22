@@ -67,6 +67,12 @@ header {
 	margin-right: 0;
 }
 
+.qol-cat{
+	margin-right: auto;
+	margin-left: auto;
+	max-width: 300px;
+}
+
 .center {
 	text-align: center;
 }
