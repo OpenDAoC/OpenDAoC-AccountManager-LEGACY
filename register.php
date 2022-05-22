@@ -111,7 +111,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                     <div class="form-group">
-                        <label>Account</label>
+                        <label>Username</label>
                         <input type="text" name="new_account"
                                class="form-control <?php echo (!empty($account_err)) ? 'is-invalid' : ''; ?>"
                                value="<?php echo $new_account; ?>">
