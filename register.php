@@ -105,7 +105,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <h5 class="my-3 center"><?php echo $_SESSION['user']['username'] . '#' . $_SESSION['discrim']; ?></h5>
 
                 <div class="alert alert-warning center" role="alert">Please don't use <b>%</b>, <b>&</b> or spaces in
-                    your password.<br><small>You will be required to login again.</small></div>
+                    your password.</div>
 
                 <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                     <div class="form-group">
