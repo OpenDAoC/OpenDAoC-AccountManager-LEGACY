@@ -15,11 +15,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Validate new password
     if (empty(trim($_POST["new_password"]))) {
-        $new_password_err = "Please enter the new password.";
+        $new_password_err = "Please enter a password.";
     } elseif (strlen(trim($_POST["new_password"])) < 6) {
-        $new_password_err = "Password must have at least 6 characters.";
+        $new_password_err = "The new password must have at least 6 characters.";
+    } elseif (str_contains(trim($_POST["new_password"]), " ")) {
+        $new_password_err = "The new password cannot contain spaces.";
+    } elseif (str_contains(trim($_POST["new_password"]), "#")) {
+        $new_password_err = "The new password cannot contain #.";
+    } elseif (str_contains(trim($_POST["new_password"]), "&")) {
+        $new_password_err = "The new password cannot contain &.";
+    } elseif (str_contains(trim($_POST["new_password"]), "%")) {
+        $new_password_err = "The new password cannot contain %.";
     } else {
-        $new_password = trim($_POST["new_password"]);
+        $password = trim($_POST["new_password"]);
     }
 
     // Validate confirm password
@@ -71,7 +79,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <title>Atlas Account</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+    <script src="https://unpkg.com/bootstrap-show-password@1.2.1/dist/bootstrap-show-password.min.js"></script>
     <link rel="stylesheet" href="assets/css/style.css">
 
 </head>
@@ -96,19 +106,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <h3 class="my-3 center">Password Reset</h3>
             <h5 class="my-3 center"><?php echo $_SESSION['user']['username'] . '#' . $_SESSION['discrim']; ?></h5>
 
-            <div class="alert alert-warning center" role="alert">Please don't use <b>%</b>, <b>&</b> or spaces in your password.<br><small>You will be required to login again.</small></div>
+            <div class="alert alert-warning center" role="alert">Please don't use <b>%</b>, <b>&</b>, <b>#</b> or spaces for your password.<br><small>You will be required to login again.</small></div>
 
             <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                 <div class="form-group">
                     <label>New Password</label>
-                    <input type="password" name="new_password"
+                    <input data-toggle="password" type="password" name="new_password"
                            class="form-control <?php echo (!empty($new_password_err)) ? 'is-invalid' : ''; ?>"
                            value="<?php echo $new_password; ?>">
                     <span class="invalid-feedback"><?php echo $new_password_err; ?></span>
                 </div>
                 <div class="form-group">
                     <label>Confirm Password</label>
-                    <input type="password" name="confirm_password"
+                    <input data-toggle="password" type="password" name="confirm_password"
                            class="form-control <?php echo (!empty($confirm_password_err)) ? 'is-invalid' : ''; ?>">
                     <span class="invalid-feedback"><?php echo $confirm_password_err; ?></span>
                 </div>

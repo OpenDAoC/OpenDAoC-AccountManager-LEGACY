@@ -15,9 +15,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Validate new account
     if (empty(trim($_POST["new_account"]))) {
-        $account_err = "Please enter an account name.";
+        $account_err = "Please enter an username.";
     } elseif (strlen(trim($_POST["new_account"])) < 4) {
-        $account_err = "The account must have at least 4 characters.";
+        $account_err = "The username must have at least 4 characters.";
+    } elseif (str_contains(trim($_POST["new_account"]), " ")) {
+        $account_err = "The username cannot contain spaces.";
+    } elseif (str_contains(trim($_POST["new_account"]), "#")) {
+        $account_err = "The username cannot contain #.";
+    } elseif (str_contains(trim($_POST["new_account"]), "&")) {
+        $account_err = "The username cannot contain &.";
+    } elseif (str_contains(trim($_POST["new_account"]), "%")) {
+        $account_err = "The username cannot contain %.";
     } else {
         $new_account = trim($_POST["new_account"]);
     }
@@ -27,12 +35,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $account_err = "This account already exists.";
     }
 
-
     // Validate new password
     if (empty(trim($_POST["password"]))) {
         $password_err = "Please enter a password.";
     } elseif (strlen(trim($_POST["password"])) < 6) {
-        $password_err = "Password must have at least 6 characters.";
+        $password_err = "The password must have at least 6 characters.";
+    } elseif (str_contains(trim($_POST["password"]), " ")) {
+        $password_err = "The password cannot contain spaces.";
+    } elseif (str_contains(trim($_POST["password"]), "#")) {
+        $password_err = "The password cannot contain #.";
+    } elseif (str_contains(trim($_POST["password"]), "&")) {
+        $password_err = "The password cannot contain &.";
+    } elseif (str_contains(trim($_POST["password"]), "%")) {
+        $password_err = "The password cannot contain %.";
     } else {
         $password = trim($_POST["password"]);
     }
@@ -77,7 +92,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <title>Atlas Account</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+    <script src="https://unpkg.com/bootstrap-show-password@1.2.1/dist/bootstrap-show-password.min.js"></script>
     <link rel="stylesheet" href="assets/css/style.css">
 
 </head>
@@ -104,8 +121,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <h3 class="my-3 center">Account registration</h3>
                 <h5 class="my-3 center"><?php echo $_SESSION['user']['username'] . '#' . $_SESSION['discrim']; ?></h5>
 
-                <div class="alert alert-warning center" role="alert">Please don't use <b>%</b>, <b>&</b> or spaces in
-                    your password.</div>
+                <div class="alert alert-warning center" role="alert">Please don't use <b>%</b>, <b>&</b>, <b>#</b> or spaces for your account or password.</div>
 
                 <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                     <div class="form-group">
@@ -117,7 +133,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
                     <div class="form-group">
                         <label>Password</label>
-                        <input type="password" name="password"
+                        <input data-toggle="password" type="password" name="password"
                                class="form-control <?php echo (!empty($password_err)) ? 'is-invalid' : ''; ?>">
                         <span class="invalid-feedback"><?php echo $password_err; ?></span>
                     </div>
