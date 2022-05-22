@@ -57,7 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if (mysqli_stmt_execute($stmt)) {
                 // Password updated successfully. Destroy the session, and redirect to login page
                 session_destroy();
-                header("location: index.php");
+                header("location: /");
                 exit();
             } else {
                 echo $_SESSION["username"];
@@ -78,10 +78,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <head>
     <title>Atlas Account</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
     <script src="https://unpkg.com/bootstrap-show-password@1.2.1/dist/bootstrap-show-password.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/style.css">
 
 </head>
@@ -111,16 +111,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                 <div class="form-group">
                     <label>New Password</label>
-                    <input data-toggle="password" type="password" name="new_password"
+                    <input type="password" name="new_password" data-toggle="password"
                            class="form-control <?php echo (!empty($new_password_err)) ? 'is-invalid' : ''; ?>"
                            value="<?php echo $new_password; ?>">
-                    <span class="invalid-feedback"><?php echo $new_password_err; ?></span>
+                    <span class="error-msg"><?php echo $new_password_err; ?></span>
                 </div>
                 <div class="form-group">
                     <label>Confirm Password</label>
                     <input data-toggle="password" type="password" name="confirm_password"
                            class="form-control <?php echo (!empty($confirm_password_err)) ? 'is-invalid' : ''; ?>">
-                    <span class="invalid-feedback"><?php echo $confirm_password_err; ?></span>
+                    <span class="error-msg"><?php echo $confirm_password_err; ?></span>
                 </div>
                 <div class="form-group center">
                     <input type="submit" class="btn btn-warning" value="Change Password">

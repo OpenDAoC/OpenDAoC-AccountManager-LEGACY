@@ -129,13 +129,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <input type="text" name="new_account"
                                class="form-control <?php echo (!empty($account_err)) ? 'is-invalid' : ''; ?>"
                                value="<?php echo $new_account; ?>">
-                        <span class="invalid-feedback"><?php echo $account_err; ?></span>
+                        <span class="error-msg"><?php echo $account_err; ?></span>
                     </div>
                     <div class="form-group">
                         <label>Password</label>
                         <input data-toggle="password" type="password" name="password"
                                class="form-control <?php echo (!empty($password_err)) ? 'is-invalid' : ''; ?>">
-                        <span class="invalid-feedback"><?php echo $password_err; ?></span>
+                        <span class="error-msg"><?php echo $password_err; ?></span>
                     </div>
                     <div class="form-group center">
                         <input type="submit" class="btn btn-success" value="Register">
