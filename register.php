@@ -41,24 +41,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($password_err) && empty($account_err) && !empty($new_account) && !empty($password)) {
         // Prepare an update statement
 
-        $sql = "INSERT INTO account (Name, Password, DiscordID, CreationDate) VALUES (?, ?, ?, ?)";
+        $sql = "INSERT INTO account (Name, Password, DiscordID, CreationDate, Account_ID) VALUES (?, ?, ?, ?, ?)";
 
         if ($stmt = mysqli_prepare($link, $sql)) {
             // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "ssss", $param_account, $param_password, $param_username, $param_creation);
+            mysqli_stmt_bind_param($stmt, "sssss", $param_account, $param_password, $param_discord, $param_creation, $param_id);
 
             // Set parameters
-            $param_account = $new_account;
+            $param_account = $param_id = $new_account;
             $param_password = cryptPassword($password);
-            $param_username = $_SESSION['user_id'];
+            $param_discord = $_SESSION['user_id'];
             $param_creation = date("Y-m-d H:i:s");
 
             // Attempt to execute the prepared statement
             if (mysqli_stmt_execute($stmt)) {
-                // Password updated successfully. Destroy the session, and redirect to login page
-                session_destroy();
+                // Redirect to login page
                 header("location: /");
-                exit();
             } else {
                 echo "Error: " . $sql . "<br>" . mysqli_error($link) . "<br>" . $param_username . "<br>" . $param_password . "<br>" . $param_username . "<br>" . $param_creation;
             }
