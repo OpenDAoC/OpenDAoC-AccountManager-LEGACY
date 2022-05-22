@@ -26,6 +26,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $new_password_err = "The new password cannot contain &.";
     } elseif (str_contains(trim($_POST["new_password"]), "%")) {
         $new_password_err = "The new password cannot contain %.";
+    } elseif (str_contains(trim($_POST["new_password"]), "^")) {
+        $new_password_err = "The new password cannot contain ^.";
     } else {
         $new_password = trim($_POST["new_password"]);
     }
@@ -106,7 +108,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <h3 class="my-3 center">Password Reset</h3>
             <h5 class="my-3 center"><?php echo $_SESSION['user']['username'] . '#' . $_SESSION['discrim']; ?></h5>
 
-            <div class="alert alert-warning center" role="alert">Please don't use <b>%</b>, <b>&</b>, <b>#</b> or spaces for your password.<br><small>You will be required to login again.</small></div>
+            <div class="alert alert-warning center" role="alert">Please don't use <b>%</b>, <b>&</b>, <b>#</b>, <b>^</b> or spaces for your password.<br><small>You will be required to login again.</small></div>
 
             <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                 <div class="form-group">

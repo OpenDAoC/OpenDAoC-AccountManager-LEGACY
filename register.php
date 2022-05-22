@@ -26,6 +26,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $account_err = "The username cannot contain &.";
     } elseif (str_contains(trim($_POST["new_account"]), "%")) {
         $account_err = "The username cannot contain %.";
+    } elseif (str_contains(trim($_POST["new_account"]), "^")) {
+        $account_err = "The username cannot contain ^.";
     } else {
         $new_account = trim($_POST["new_account"]);
     }
@@ -48,6 +50,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $password_err = "The password cannot contain &.";
     } elseif (str_contains(trim($_POST["password"]), "%")) {
         $password_err = "The password cannot contain %.";
+    } elseif (str_contains(trim($_POST["password"]), "^")) {
+        $password_err = "The password cannot contain ^.";
     } else {
         $password = trim($_POST["password"]);
     }
@@ -121,7 +125,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <h3 class="my-3 center">Account registration</h3>
                 <h5 class="my-3 center"><?php echo $_SESSION['user']['username'] . '#' . $_SESSION['discrim']; ?></h5>
 
-                <div class="alert alert-warning center" role="alert">Please don't use <b>%</b>, <b>&</b>, <b>#</b> or spaces for your account or password.</div>
+                <div class="alert alert-warning center" role="alert">Please don't use <b>%</b>, <b>&</b>, <b>#</b>, <b>^</b> or spaces for your account or password.</div>
 
                 <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                     <div class="form-group">
