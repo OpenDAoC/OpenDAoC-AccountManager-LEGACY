@@ -73,7 +73,7 @@ function cryptPassword($pass)
 // Getting the GameAccount
 function getGameAccount(string $DiscordID){
     if (empty($DiscordID)){
-        return "";
+        return null;
     }
 
     $link = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
@@ -99,7 +99,7 @@ function getGameAccount(string $DiscordID){
                     return $gameAccount;
                 }
             } else {
-                return "";
+                return null;
             }
 
             // Close statement
