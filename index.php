@@ -100,22 +100,6 @@ mysqli_close($link);
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/style.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-    <script>
-        $(document).ready(function() {
-            var showDog = localStorage.getItem("showDog");
-
-            if (showDog) {
-                var qolpeturl = "<?php echo getDog() ?>";
-                var text = "🐱";
-            } else {
-                var qolpeturl = "<?php echo getCat() ?>";
-                var text = "🐶";
-            }
-            document.getElementById("qol-pet").src = qolpeturl;
-            document.getElementById("changePet").textContent = text;
-
-        });
-    </script>
 </head>
 
 <body>
@@ -208,6 +192,22 @@ if (!isset($_SESSION['user'])) {?>
 <?php } ?>
 
 <script>
+    $(document).ready(function() {
+        var showDog = localStorage.getItem("showDog");
+
+        if (showDog == "true") {
+            var qolpeturl = "<?php echo getDog() ?>";
+            var text = "🐱";
+        } else {
+            var qolpeturl = "<?php echo getCat() ?>";
+            var text = "🐶";
+        }
+        document.getElementById("qol-pet").src = qolpeturl;
+        document.getElementById("changePet").textContent = text;
+
+    });
+
+
     $(".changePet").on("click", function() {
         if (document.getElementById("changePet").textContent == "🐶") {
             localStorage.setItem("showDog", true);
