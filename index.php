@@ -93,10 +93,10 @@ mysqli_close($link);
 
 ?>
 
-<html>
+<html lang="en">
 
 <head>
-    <title>Atlas Account Manager</title>
+    <title> Atlas Account Manager</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/style.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
@@ -104,7 +104,9 @@ mysqli_close($link);
 
 <body>
 
-<header><span class="logo">Atlas Account Manager</span>
+<header>
+    <span class="logo">
+        <a href="/"><img src="https://cdn.discordapp.com/attachments/879754382231613451/978235214256046101/atlas_circle_inv_med.png" class="logo-img" alt="Atlas Logo">Atlas Account Manager</a></span>
 
     <span class="menu">
 			<?php

@@ -23,6 +23,32 @@ header {
 	align-items: center;
 }
 
+.logo-img{
+	max-height: 50px;
+	
+	margin-right: 15px;
+}
+
+.logo a {
+	color: white;
+	text-decoration: none;
+}
+
+.logo a:hover {
+	color: white;
+	text-decoration: none;
+}
+
+.logo a:visited {
+	color: white;
+	text-decoration: none;
+}
+
+.logo a:active {
+	color: white;
+	text-decoration: none;
+}
+
 .menu {
 	float: right;
 	margin-right: 10px;
