@@ -109,7 +109,7 @@ mysqli_close($link);
                 var text = "🐱";
             } else {
                 var qolpeturl = "<?php echo getCat() ?>";
-                var text = "woof!";
+                var text = "🐶";
             }
             document.getElementById("qol-pet").src = qolpeturl;
             document.getElementById("changePet").textContent = text;
