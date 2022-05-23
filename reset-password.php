@@ -128,8 +128,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <span class="error-msg"><?php echo $confirm_password_err; ?></span>
                 </div>
                 <div class="form-group center">
-                    <input type="submit" class="btn btn-warning" value="Change Password">
                     <a class="btn btn-secondary" href="index.php">Cancel</a>
+                    <input type="submit" class="btn btn-warning" value="Change Password">
                 </div>
             </form>
 

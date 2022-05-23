@@ -115,9 +115,9 @@ mysqli_close($link);
                 if (getGameAccount($_SESSION['user_id']) != null){
                     echo '<a href="#" class="changePet small" id="changePet"></a>';
                 }
-                echo '<a href="includes/logout.php"><button class="log-out">LOGOUT</button></a>';
+                echo '<a href="includes/logout.php"><button class="btn btn-danger log-out">LOGOUT</button></a>';
             } else {
-                echo "<a href='$auth_url'><button class='log-in'>LOGIN</button></a>";
+                echo "<a href='$auth_url'><button class='btn btn-success log-in'>LOGIN</button></a>";
             }
             ?>
 		</span>
@@ -179,7 +179,7 @@ if (!isset($_SESSION['user'])) {?>
     <div class="row center">
         <div class="col-3"></div>
         <div class="col-6">
-            <a href="reset-password.php" class="btn btn-warning mx-auto" style="margin: 10px">Change Password</a>
+            <a href="reset-password.php" class="btn btn-warning mx-auto " style="margin: 10px">Change Password</a>
         </div>
 
         <div class="col-3"></div>

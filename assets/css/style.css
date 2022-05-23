@@ -65,23 +65,19 @@ header {
 }
 
 .log-in {
-	color: #202225;
-	background-color: #57cd58;
 	font-weight: bold;
 	width: 150px;
 	height: 38px;
-	border-radius: 5px;
-	border: None;
 }
 
 .log-out {
-	color: #202225;
-	background-color: #e54848;
 	font-weight: bold;
 	width: 150px;
 	height: 38px;
-	border-radius: 5px;
-	border: None;
+}
+
+.bold {
+	font-weight: bold;
 }
 
 .log-in:hover {
