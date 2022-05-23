@@ -72,6 +72,10 @@ function cryptPassword($pass)
 
 // Getting the GameAccount
 function getGameAccount(string $DiscordID){
+    if (empty($DiscordID)){
+        return "";
+    }
+
     $link = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
     $sql = "SELECT Name FROM account WHERE DiscordID = ?";
 
