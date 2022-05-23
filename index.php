@@ -99,6 +99,23 @@ mysqli_close($link);
     <title>Atlas Account Manager</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function() {
+            var showDog = localStorage.getItem("showDog");
+
+            if (showDog) {
+                var qolpeturl = "<?php echo getDog() ?>";
+                var text = "🐱";
+            } else {
+                var qolpeturl = "<?php echo getCat() ?>";
+                var text = "woof!";
+            }
+            document.getElementById("qol-pet").src = qolpeturl;
+            document.getElementById("changePet").textContent = text;
+
+        });
+    </script>
 </head>
 
 <body>
@@ -109,6 +126,9 @@ mysqli_close($link);
 			<?php
             $auth_url = url($client_id, $redirect_url, $scopes);
             if (isset($_SESSION['user'])) {
+                if (getGameAccount($_SESSION['user_id']) != null){
+                    echo '<a href="#" class="changePet small" id="changePet"></a>';
+                }
                 echo '<a href="includes/logout.php"><button class="log-out">LOGOUT</button></a>';
             } else {
                 echo "<a href='$auth_url'><button class='log-in'>LOGIN</button></a>";
@@ -169,25 +189,40 @@ if (!isset($_SESSION['user'])) {?>
 <?php
 } else if ($gameAccount != null && isset($_SESSION['user'])) {
 
-    $opts = [
-        "http" => [
-            "method" => "GET",
-            "header" => "x-api-key: e0084554-0ee5-4687-aaf4-30b0a5f4b518"
-        ]
-    ];
-
-    $context = stream_context_create($opts);
-    $json = file_get_contents('https://api.thecatapi.com/v1/images/search?limit=1&size=small',false, $context);
-    $obj = json_decode($json);
 ?>
     <div class="row center">
-        <a href="reset-password.php" class="btn btn-warning mx-auto" style="margin: 10px">Change Password</a>
+        <div class="col-3"></div>
+        <div class="col-6">
+            <a href="reset-password.php" class="btn btn-warning mx-auto" style="margin: 10px">Change Password</a>
+        </div>
+
+        <div class="col-3"></div>
     </div>
-    <div class="row center">
-        <img src="<?php echo $obj[0]->url; ?>" alt="QoL cat" class="center qol-cat">
+    <div class="row center" id="qol-dog">
+        <img src="" alt="" class="center qol-pet" id="qol-pet">
+    </div>
+    <div class="row center" id="qol-dog">
+<!--        <a href="#" class="changePet small" id="changePet" style="margin:auto;"></a>-->
     </div>
 
 <?php } ?>
+
+<script>
+    $(".changePet").on("click", function() {
+        if (document.getElementById("changePet").textContent == "🐶") {
+            localStorage.setItem("showDog", true);
+            var qolpeturl = "<?php echo getDog() ?>";
+            var text = "🐱";
+        } else {
+            localStorage.setItem("showDog", false);
+            var qolpeturl = "<?php echo getCat() ?>";
+            var text = "🐶";
+        }
+        document.getElementById("qol-pet").src = qolpeturl;
+        document.getElementById("changePet").textContent = text;
+        return false;
+    });
+</script>
 
 </body>
 

@@ -155,6 +155,26 @@ function linkDiscord(string $gameAccount){
     mysqli_close($link);
 }
 
+function getCat(){
+    $opts = [
+        "http" => [
+            "method" => "GET",
+            "header" => "x-api-key: e0084554-0ee5-4687-aaf4-30b0a5f4b518"
+        ]
+    ];
+
+    $context = stream_context_create($opts);
+    $json = file_get_contents('https://api.thecatapi.com/v1/images/search?limit=1&size=small',false, $context);
+    $obj = json_decode($json);
+    return $obj[0]->url;
+}
+
+function getDog(){
+    $json = file_get_contents('https://dog.ceo/api/breeds/image/random',);
+    $obj = json_decode($json);
+    return $obj->message;
+}
+
 function setDiscordName(string $gameAccount){
     $link = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
     $sql = "UPDATE account SET DiscordName = ? WHERE Name = ?";

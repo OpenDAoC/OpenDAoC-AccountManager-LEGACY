@@ -1,6 +1,6 @@
 * {
 	margin: 0;
-}
+text-align: center;}
 
 body {
 	background: #36393f;
@@ -67,10 +67,15 @@ header {
 	margin-right: 0;
 }
 
-.qol-cat{
+.qol-pet{
 	margin-right: auto;
 	margin-left: auto;
 	max-width: 300px;
+}
+
+.changePet{
+	color: #dcddde;
+	font-size: 20px;
 }
 
 .center {
