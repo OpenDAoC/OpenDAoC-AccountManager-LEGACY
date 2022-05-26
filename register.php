@@ -14,22 +14,25 @@ $password_err = $account_err = "";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Validate new account
-    if (empty(trim($_POST["new_account"]))) {
+    $temp_account = trim($_POST["new_account"]);
+    if (empty($temp_account)) {
         $account_err = "Please enter an username.";
-    } elseif (strlen(trim($_POST["new_account"])) < 4) {
+    } elseif (strlen($temp_account) < 4) {
         $account_err = "The username must have at least 4 characters.";
-    } elseif (str_contains(trim($_POST["new_account"]), " ")) {
+    } elseif (str_contains($temp_account, " ")) {
         $account_err = "The username cannot contain spaces.";
-    } elseif (str_contains(trim($_POST["new_account"]), "#")) {
+    } elseif (str_contains($temp_account, "#")) {
         $account_err = "The username cannot contain #.";
-    } elseif (str_contains(trim($_POST["new_account"]), "&")) {
+    } elseif (str_contains($temp_account, "&")) {
         $account_err = "The username cannot contain &.";
-    } elseif (str_contains(trim($_POST["new_account"]), "%")) {
+    } elseif (str_contains($temp_account, "%")) {
         $account_err = "The username cannot contain %.";
-    } elseif (str_contains(trim($_POST["new_account"]), "^")) {
+    } elseif (str_contains($temp_account, "^")) {
         $account_err = "The username cannot contain ^.";
+    } elseif (filter_var($temp_account, FILTER_VALIDATE_EMAIL)) {
+        $account_err = "Please don't use an email address.";
     } else {
-        $new_account = trim($_POST["new_account"]);
+        $new_account = $temp_account;
     }
 
     $check_account = mysqli_query($link,"SELECT * FROM account WHERE Name = '$new_account'");
@@ -38,22 +41,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Validate new password
-    if (empty(trim($_POST["password"]))) {
+    $temp_password = trim($_POST["password"]);
+    if (empty($temp_password)) {
         $password_err = "Please enter a password.";
-    } elseif (strlen(trim($_POST["password"])) < 6) {
+    } elseif (strlen($temp_password) < 6) {
         $password_err = "The password must have at least 6 characters.";
-    } elseif (str_contains(trim($_POST["password"]), " ")) {
+    } elseif (str_contains($temp_password, " ")) {
         $password_err = "The password cannot contain spaces.";
-    } elseif (str_contains(trim($_POST["password"]), "#")) {
+    } elseif (str_contains($temp_password, "#")) {
         $password_err = "The password cannot contain #.";
-    } elseif (str_contains(trim($_POST["password"]), "&")) {
+    } elseif (str_contains($temp_password, "&")) {
         $password_err = "The password cannot contain &.";
-    } elseif (str_contains(trim($_POST["password"]), "%")) {
+    } elseif (str_contains($temp_password, "%")) {
         $password_err = "The password cannot contain %.";
-    } elseif (str_contains(trim($_POST["password"]), "^")) {
+    } elseif (str_contains($temp_password, "^")) {
         $password_err = "The password cannot contain ^.";
     } else {
-        $password = trim($_POST["password"]);
+        $password = $temp_password;
     }
 
     // Check input errors before updating the database
