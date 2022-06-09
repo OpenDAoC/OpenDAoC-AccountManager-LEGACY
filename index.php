@@ -34,6 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Validate credentials
     if (empty($username_err) && empty($password_err)) {
         // Prepare a select statement
+
         $sql = "SELECT Account_ID, Name, Password, DiscordID FROM account WHERE Name = ?";
 
         if ($stmt = mysqli_prepare($link, $sql)) {
@@ -53,7 +54,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     // Bind result variables
                     mysqli_stmt_bind_result($stmt, $id, $username, $hashed_password, $discordID);
                     if (mysqli_stmt_fetch($stmt)) {
-                        if (strcmp(cryptPassword($password), $hashed_password) == 0) {
+                        if($discordID != null){
+                            $login_err = "This game account is already linked to another Discord.";
+                        } else if (strcmp(cryptPassword($password), $hashed_password) == 0) {
+
                             // Password is correct, so start a new session
                             session_start();
 
