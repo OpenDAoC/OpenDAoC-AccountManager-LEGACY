@@ -27,6 +27,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $account_err = "The username cannot contain &.";
     } elseif (str_contains($temp_account, "%")) {
         $account_err = "The username cannot contain %.";
+    } elseif (str_contains($temp_account, ".")) {
+        $account_err = "The username cannot contain periods.";
     } elseif (str_contains($temp_account, "^")) {
         $account_err = "The username cannot contain ^.";
     } elseif (filter_var($temp_account, FILTER_VALIDATE_EMAIL)) {
@@ -54,6 +56,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $password_err = "The password cannot contain &.";
     } elseif (str_contains($temp_password, "%")) {
         $password_err = "The password cannot contain %.";
+    } elseif (str_contains($temp_password, ".")) {
+        $password_err = "The password cannot contain periods.";
     } elseif (str_contains($temp_password, "^")) {
         $password_err = "The password cannot contain ^.";
     } else {
