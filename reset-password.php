@@ -28,6 +28,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $new_password_err = "The new password cannot contain %.";
     } elseif (str_contains(trim($_POST["new_password"]), ".")) {
         $new_password_err = "The new password cannot contain periods.";
+    } elseif (str_contains(trim($_POST["new_password"]), "-")) {
+        $new_password_err = "The new password cannot contain dashes.";
+    } elseif (str_contains(trim($_POST["new_password"]), "_")) {
+        $new_password_err = "The new password cannot contain underscores.";
     } elseif (str_contains(trim($_POST["new_password"]), "^")) {
         $new_password_err = "The new password cannot contain ^.";
     } else {

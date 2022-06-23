@@ -33,6 +33,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $account_err = "The username cannot contain !.";
     } elseif (str_contains($temp_account, "^")) {
         $account_err = "The username cannot contain ^.";
+    } elseif (str_contains($temp_account, "_")) {
+        $account_err = "The username cannot contain underscores.";
+    } elseif (str_contains($temp_account, "-")) {
+        $account_err = "The username cannot contain dashes.";
     } elseif (filter_var($temp_account, FILTER_VALIDATE_EMAIL)) {
         $account_err = "Please don't use an email address.";
     } else {
@@ -60,6 +64,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $password_err = "The password cannot contain %.";
     } elseif (str_contains($temp_password, ".")) {
         $password_err = "The password cannot contain periods.";
+    } elseif (str_contains($temp_password, "_")) {
+        $password_err = "The password cannot contain underscores.";
+    } elseif (str_contains($temp_password, "-")) {
+        $password_err = "The password cannot contain dashes.";
     } elseif (str_contains($temp_password, "^")) {
         $password_err = "The password cannot contain ^.";
     } else {
