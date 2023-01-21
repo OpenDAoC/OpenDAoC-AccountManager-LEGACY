@@ -110,7 +110,7 @@ mysqli_close($link);
 
 <header>
     <span class="logo">
-        <a href="/"><img src="https://cdn.discordapp.com/attachments/879754382231613451/978235214256046101/atlas_circle_inv_med.png" class="logo-img" alt="Atlas Logo">Atlas Account Manager</a></span>
+        <a href="/"><img src="https://images-ext-1.discordapp.net/external/XgXU5frrslTG4S22SXXrUqk1dIyH-NALUYa9HG_UzAc/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/865566424537104386/d1da3941e9a38019a65e0e36e8b2fa41.png" class="logo-img" alt="Atlas Logo">Atlas Account Manager</a></span>
 
     <span class="menu">
 			<?php
