@@ -14,28 +14,24 @@ $new_password_err = $confirm_password_err = "";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Validate new password
-    if (empty(trim($_POST["new_password"]))) {
+    $temp_password = trim($_POST["new_password"]);
+    $contains_prohibited = false;
+
+    foreach (PROHIBITED_CHARACTERS as $char) {
+        if (str_contains($temp_password, $char)) {
+            $contains_prohibited = true;
+            break;
+        }
+    }
+
+    if (empty($temp_password)) {
         $new_password_err = "Please enter a password.";
-    } elseif (strlen(trim($_POST["new_password"])) < 6) {
+    } elseif (strlen($temp_password) < 6) {
         $new_password_err = "The new password must have at least 6 characters.";
-    } elseif (str_contains(trim($_POST["new_password"]), " ")) {
-        $new_password_err = "The new password cannot contain spaces.";
-    } elseif (str_contains(trim($_POST["new_password"]), "#")) {
-        $new_password_err = "The new password cannot contain #.";
-    } elseif (str_contains(trim($_POST["new_password"]), "&")) {
-        $new_password_err = "The new password cannot contain &.";
-    } elseif (str_contains(trim($_POST["new_password"]), "%")) {
-        $new_password_err = "The new password cannot contain %.";
-    } elseif (str_contains(trim($_POST["new_password"]), ".")) {
-        $new_password_err = "The new password cannot contain periods.";
-    } elseif (str_contains(trim($_POST["new_password"]), "-")) {
-        $new_password_err = "The new password cannot contain dashes.";
-    } elseif (str_contains(trim($_POST["new_password"]), "_")) {
-        $new_password_err = "The new password cannot contain underscores.";
-    } elseif (str_contains(trim($_POST["new_password"]), "^")) {
-        $new_password_err = "The new password cannot contain ^.";
+    } elseif ($contains_prohibited) {
+        $new_password_err = "The new password cannot contain any of the following characters: " . implode(", ", PROHIBITED_CHARACTERS);
     } else {
-        $new_password = trim($_POST["new_password"]);
+        $new_password = $temp_password;
     }
 
     // Validate confirm password
@@ -51,33 +47,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Check input errors before updating the database
     if (empty($new_password_err) && empty($confirm_password_err)) {
         // Prepare an update statement
-        $sql = "UPDATE account SET Password = ? WHERE DiscordID = ?";
+        $sql = "UPDATE account SET Password = :password WHERE DiscordID = :discord_id";
+        $stmt = $link->prepare($sql);
+        $stmt->bindParam(':password', $param_password);
+        $stmt->bindParam(':discord_id', $param_discord_id);
 
-        if ($stmt = mysqli_prepare($link, $sql)) {
-            // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "ss", $param_password, $param_username);
+        // Set parameters
+        $param_password = cryptPassword($new_password);
+        $param_discord_id = $_SESSION['user_id'];
 
-            // Set parameters
-            $param_password = cryptPassword($new_password);
-            $param_username = $_SESSION['user_id'];
-
-            // Attempt to execute the prepared statement
-            if (mysqli_stmt_execute($stmt)) {
-                // Password updated successfully. Destroy the session, and redirect to login page
-                session_destroy();
-                header("location: /");
-                exit();
-            } else {
-                echo $_SESSION["username"];
-            }
-
-            // Close statement
-            mysqli_stmt_close($stmt);
+        // Attempt to execute the prepared statement
+        if ($stmt->execute()) {
+            // Password updated successfully. Destroy the session, and redirect to login page
+            session_destroy();
+            header("location: /");
+            exit();
+        } else {
+            echo $_SESSION["username"];
         }
     }
-
-    // Close connection
-    mysqli_close($link);
 }
 
 ?>
@@ -98,7 +86,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <header>
     <header>
         <span class="logo">
-        <a href="/"><img src="https://cdn.discordapp.com/attachments/879754382231613451/978235214256046101/atlas_circle_inv_med.png" class="logo-img" alt="Atlas Logo">Atlas Account Manager</a></span>
+        <a href="/"><img src="https://cdn.discordapp.com/avatars/865566424537104386/282901fdaa488f57a95faae665a7c245.webp" class="logo-img" alt="Logo">OpenDAoC Account Manager</a></span>
     <span class="menu">
 			<?php
 

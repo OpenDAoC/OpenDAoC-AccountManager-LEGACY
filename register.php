@@ -1,5 +1,4 @@
 <?php
-# Including all the required scripts for demo
 require __DIR__ . "/includes/functions.php";
 require __DIR__ . "/includes/discord.php";
 require __DIR__ . "/config.php";
@@ -12,101 +11,77 @@ $password_err = $account_err = "";
 
 // Processing form data when form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
     // Validate new account
     $temp_account = trim($_POST["new_account"]);
+
+    $contains_prohibited = false;
+
+    foreach (PROHIBITED_CHARACTERS as $char) {
+        if (str_contains($temp_account, $char)) {
+            $contains_prohibited = true;
+            break;
+        }
+    }
+
     if (empty($temp_account)) {
-        $account_err = "Please enter an username.";
+        $account_err = "Please enter a username.";
     } elseif (strlen($temp_account) < 4) {
         $account_err = "The username must have at least 4 characters.";
-    } elseif (str_contains($temp_account, " ")) {
-        $account_err = "The username cannot contain spaces.";
-    } elseif (str_contains($temp_account, "#")) {
-        $account_err = "The username cannot contain #.";
-    } elseif (str_contains($temp_account, "&")) {
-        $account_err = "The username cannot contain &.";
-    } elseif (str_contains($temp_account, "%")) {
-        $account_err = "The username cannot contain %.";
-    } elseif (str_contains($temp_account, ".")) {
-        $account_err = "The username cannot contain periods.";
-    } elseif (str_contains($temp_account, "!")) {
-        $account_err = "The username cannot contain !.";
-    } elseif (str_contains($temp_account, "^")) {
-        $account_err = "The username cannot contain ^.";
-    } elseif (str_contains($temp_account, "_")) {
-        $account_err = "The username cannot contain underscores.";
-    } elseif (str_contains($temp_account, "-")) {
-        $account_err = "The username cannot contain dashes.";
-    } elseif (filter_var($temp_account, FILTER_VALIDATE_EMAIL)) {
-        $account_err = "Please don't use an email address.";
+    } elseif ($contains_prohibited) {
+        $account_err = "The username cannot contain any of the following characters: " . implode(", ", PROHIBITED_CHARACTERS);
     } else {
         $new_account = $temp_account;
     }
 
-    $check_account = mysqli_query($link,"SELECT * FROM account WHERE Name = '$new_account'");
-    if (mysqli_num_rows($check_account) > 0) {
+    $stmt = $link->prepare("SELECT * FROM account WHERE Name = ?");
+    $stmt->execute([$new_account]);
+    if ($stmt->rowCount() > 0) {
         $account_err = "This account already exists.";
     }
 
-    // Validate new password
+// Validate new password
     $temp_password = trim($_POST["password"]);
+    $contains_prohibited = false;
+
+    foreach (PROHIBITED_CHARACTERS as $char) {
+        if (str_contains($temp_password, $char)) {
+            $contains_prohibited = true;
+            break;
+        }
+    }
+
     if (empty($temp_password)) {
         $password_err = "Please enter a password.";
     } elseif (strlen($temp_password) < 6) {
         $password_err = "The password must have at least 6 characters.";
-    } elseif (str_contains($temp_password, " ")) {
-        $password_err = "The password cannot contain spaces.";
-    } elseif (str_contains($temp_password, "#")) {
-        $password_err = "The password cannot contain #.";
-    } elseif (str_contains($temp_password, "&")) {
-        $password_err = "The password cannot contain &.";
-    } elseif (str_contains($temp_password, "%")) {
-        $password_err = "The password cannot contain %.";
-    } elseif (str_contains($temp_password, ".")) {
-        $password_err = "The password cannot contain periods.";
-    } elseif (str_contains($temp_password, "_")) {
-        $password_err = "The password cannot contain underscores.";
-    } elseif (str_contains($temp_password, "-")) {
-        $password_err = "The password cannot contain dashes.";
-    } elseif (str_contains($temp_password, "^")) {
-        $password_err = "The password cannot contain ^.";
+    } elseif ($contains_prohibited) {
+        $password_err = "The password cannot contain any of the following characters: " . implode(", ", PROHIBITED_CHARACTERS);
     } else {
         $password = $temp_password;
     }
 
-    // Check input errors before updating the database
+// Check input errors before updating the database
     if (empty($password_err) && empty($account_err) && !empty($new_account) && !empty($password)) {
-        // Prepare an update statement
-
+        // Prepare an insert statement
         $sql = "INSERT INTO account (Name, Password, DiscordID, CreationDate, Account_ID, PrivLevel) VALUES (?, ?, ?, ?, ?, 1)";
+        $stmt = $link->prepare($sql);
 
-        if ($stmt = mysqli_prepare($link, $sql)) {
-            // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "sssss", $param_account, $param_password, $param_discord, $param_creation, $param_id);
+        // Set parameters
+        $param_account = $param_id = $new_account;
+        $param_password = cryptPassword($password);
+        $param_discord = $_SESSION['user_id'];
+        $param_creation = date("Y-m-d H:i:s");
 
-            // Set parameters
-            $param_account = $param_id = $new_account;
-            $param_password = cryptPassword($password);
-            $param_discord = $_SESSION['user_id'];
-            $param_creation = date("Y-m-d H:i:s");
-
-            // Attempt to execute the prepared statement
-            if (mysqli_stmt_execute($stmt)) {
-                // Redirect to login page
-                header("location: /");
-            } else {
-                echo "Error: " . $sql . "<br>" . mysqli_error($link) . "<br>" . $param_username . "<br>" . $param_password . "<br>" . $param_username . "<br>" . $param_creation;
-            }
-
-            // Close statement
-            mysqli_stmt_close($stmt);
+        // Attempt to execute the prepared statement
+        if ($stmt->execute([$param_account, $param_password, $param_discord, $param_creation, $param_id])) {
+            // Redirect to login page
+            header("location: /");
+        } else {
+            echo "Error: " . $stmt->errorInfo()[2] . "<br>" . $param_username . "<br>" . $param_password . "<br>" . $param_username . "<br>" . $param_creation;
         }
     }
 
-    // Close connection
-    mysqli_close($link);
 }
-
 ?>
 
 <html lang="en">

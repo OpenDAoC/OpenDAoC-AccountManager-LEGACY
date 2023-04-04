@@ -72,7 +72,7 @@ function get_user($email = null)
     $_SESSION['discrim'] = $results['discriminator'];
     $_SESSION['user_id'] = $results['id'];
     $_SESSION['user_avatar'] = $results['avatar'];
-    # Fetching email 
+    # Fetching email
     if ($email == True) {
         $_SESSION['email'] = $results['email'];
     }
@@ -97,7 +97,7 @@ function get_guilds()
 function get_guild($id)
 {
     $url = $GLOBALS['base_url'] . "/api/guilds/$id";
-    $headers = array('Content-Type: application/x-www-form-urlencoded', 'Authorization: Bot ' . $GLOBALS['bot_token']);
+    $headers = array('Content-Type: application/x-www-form-urlencoded', 'Authorization: Bearer ' . $_SESSION['access_token']);
     $curl = curl_init();
     curl_setopt($curl, CURLOPT_URL, $url);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
@@ -112,7 +112,7 @@ function get_guild($id)
 function get_connections()
 {
     $url = $GLOBALS['base_url'] . "/api/users/@me/connections";
-    $headers = array('Content-Type: application/x-www-form-urlencoded', 'Authorization: Bearer ' . $_SESSION['access_token']);
+    $headers = array ('Content-Type: application/x-www-form-urlencoded', 'Authorization: Bearer ' . $_SESSION['access_token']);
     $curl = curl_init();
     curl_setopt($curl, CURLOPT_URL, $url);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);

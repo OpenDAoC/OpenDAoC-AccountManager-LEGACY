@@ -1,162 +1,76 @@
 <?php
 
- 
 # A function to redirect user.
 function redirect($url)
 {
-    if (!headers_sent())
-    {    
-        header('Location: '.$url);
-        exit;
-        }
-    else
-        {  
-        echo '<script type="text/javascript">';
-        echo 'window.location.href="'.$url.'";';
-        echo '</script>';
-        echo '<noscript>';
-        echo '<meta http-equiv="refresh" content="0;url='.$url.'" />';
-        echo '</noscript>';
-        exit;
-    }
+    header('Location: '.$url);
+    exit();
 }
 
-# A function which returns users IP
-function client_ip()
-{
-	if (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))
-	{
-		return $_SERVER['HTTP_X_FORWARDED_FOR'];
-	}
-	else
-	{
-		return $_SERVER['REMOTE_ADDR'];
-	}
-}
-
-# Check user's avatar type
-function is_animated($avatar)
-{
-	$ext = substr($avatar, 0, 2);
-	if ($ext == "a_")
-	{
-		return ".gif";
-	}
-	else
-	{
-		return ".png";
-	}
-}
 // DOL encryption function
 function cryptPassword($pass)
 {
-	$len = strlen($pass);
-	$res = "";
-	for ($i = 0; $i < $len; $i++)
-	{
-		$res = $res . chr(ord(substr($pass, $i, 1)) >> 8);
-		$res = $res . chr(ord(substr($pass, $i, 1)));
-	}
+    $len = strlen($pass);
+    $res = "";
+    for ($i = 0; $i < $len; $i++) {
+        $res = $res . chr(ord(substr($pass, $i, 1)) >> 8);
+        $res = $res . chr(ord(substr($pass, $i, 1)));
+    }
 
-	$hash = strtoupper(md5($res));
-	$len = strlen($hash);
-	for ($i = ($len-1)&~1; $i >= 0; $i-=2)
-	{
-		if (substr($hash, $i, 1) == "0")
-			$hash = substr($hash, 0, $i) . substr($hash, $i+1, $len);
-	}
+    $hash = strtoupper(md5($res));
+    $len = strlen($hash);
+    for ($i = ($len - 1) & ~1; $i >= 0; $i -= 2) {
+        if (substr($hash, $i, 1) == "0") {
+            $hash = substr($hash, 0, $i) . substr($hash, $i + 1, $len);
+        }
+    }
 
-	$crypted = "##" . $hash;
-	return $crypted;
+    $crypted = "##" . $hash;
+    return $crypted;
 }
 
 // Getting the GameAccount
-function getGameAccount(string $DiscordID){
-    if (empty($DiscordID)){
+function getGameAccount(string $DiscordID)
+{
+    if (empty($DiscordID)) {
         return null;
     }
 
-    $link = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
-    $sql = "SELECT Name FROM account WHERE DiscordID = ?";
+    $dsn = 'mysql:host=' . DB_SERVER . ';dbname=' . DB_NAME;
+    $pdo = new PDO($dsn, DB_USERNAME, DB_PASSWORD);
 
-    if ($stmt = mysqli_prepare($link, $sql)) {
-        // Bind variables to the prepared statement as parameters
-        mysqli_stmt_bind_param($stmt, "s", $param_DiscordID);
+    $stmt = $pdo->prepare("SELECT Name FROM account WHERE DiscordID = :DiscordID");
+    $stmt->execute(['DiscordID' => $DiscordID]);
 
-        // Set parameters
-        $param_DiscordID = $DiscordID;
+    $gameAccount = $stmt->fetchColumn();
 
-        // Attempt to execute the prepared statement
-        if (mysqli_stmt_execute($stmt)) {
-            // Store result
-            mysqli_stmt_store_result($stmt);
-
-            // Check if username exists, if yes then verify password
-            if (mysqli_stmt_num_rows($stmt) == 1) {
-                // Bind result variables
-                mysqli_stmt_bind_result($stmt, $gameAccount);
-                if (mysqli_stmt_fetch($stmt)) {
-                    return $gameAccount;
-                }
-            } else {
-                return null;
-            }
-
-            // Close statement
-            mysqli_stmt_close($stmt);
-        }
+    if ($gameAccount) {
+        return $gameAccount;
+    } else {
+        return null;
     }
-    mysqli_close($link);
 }
 
-function linkDiscord(string $gameAccount){
-    $link = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
-    $sql = "UPDATE account SET DiscordID = ? WHERE Name = ?";
+function linkDiscord(string $gameAccount)
+{
+    $dsn = 'mysql:host=' . DB_SERVER . ';dbname=' . DB_NAME;
+    $pdo = new PDO($dsn, DB_USERNAME, DB_PASSWORD);
 
-    if ($stmt = mysqli_prepare($link, $sql)) {
-        // Bind variables to the prepared statement as parameters
-        mysqli_stmt_bind_param($stmt, "ss", $param_discord, $param_username);
+    $stmt = $pdo->prepare("UPDATE account SET DiscordID = :discord WHERE Name = :username");
 
-        // Set parameters
-        $param_username = $gameAccount;
-        $param_discord = $_SESSION['user_id'];
-        // Attempt to execute the prepared statement
-        if (mysqli_stmt_execute($stmt)) {
-            // Password updated successfully. Destroy the session, and redirect to login page
-            session_destroy();
-            header("location: index.php");
-            exit();
-        } else {
-            echo $_SESSION["username"];
-        }
+    $stmt->execute([
+        'discord' => $_SESSION['user_id'],
+        'username' => $gameAccount
+    ]);
 
-        // Close statement
-        mysqli_stmt_close($stmt);
-    }
+    $stmt = $pdo->prepare("UPDATE account SET DiscordName = :discordName WHERE Name = :username");
 
-    $sql = "UPDATE account SET DiscordName = ? WHERE Name = ?";
+    $stmt->execute([
+        'discordName' => $_SESSION['user']['username'] . '#' . $_SESSION['discrim'],
+        'username' => $gameAccount
+    ]);
 
-    if ($stmt = mysqli_prepare($link, $sql)) {
-        // Bind variables to the prepared statement as parameters
-        mysqli_stmt_bind_param($stmt, "ss", $param_discord, $param_username);
-
-        // Set parameters
-        $param_discord = $_SESSION['user']['username'] . '#' . $_SESSION['discrim'];
-        // Attempt to execute the prepared statement
-        if (mysqli_stmt_execute($stmt)) {
-            // Password updated successfully. Destroy the session, and redirect to login page
-            session_destroy();
-            header("location: index.php");
-            exit();
-        } else {
-            echo $_SESSION["username"];
-        }
-
-        // Close statement
-        mysqli_stmt_close($stmt);
-    }
-
-    mysqli_close($link);
+    redirect("index.php");
 }
 
 function getCat(){
@@ -180,73 +94,21 @@ function getDog(){
 }
 
 function setDiscordName(string $gameAccount){
-    $link = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
+    $dsn = "mysql:host=".DB_SERVER.";dbname=".DB_NAME;
+    $pdo = new PDO($dsn, DB_USERNAME, DB_PASSWORD);
     $sql = "UPDATE account SET DiscordName = ? WHERE Name = ?";
     $discordName = $_SESSION['user']['username'] . '#' . $_SESSION['discrim'];
 
-    if ($stmt = mysqli_prepare($link, $sql)) {
-        // Bind variables to the prepared statement as parameters
-        mysqli_stmt_bind_param($stmt, "ss", $param_discord, $param_username);
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(1, $discordName, PDO::PARAM_STR);
+    $stmt->bindParam(2, $gameAccount, PDO::PARAM_STR);
 
-        // Set parameters
-        $param_discord = $discordName;
-        // Attempt to execute the prepared statement
-        if (mysqli_stmt_execute($stmt)) {
-            // Password updated successfully. Destroy the session, and redirect to login page
-            session_destroy();
-            header("location: index.php");
-            exit();
-        } else {
-            echo $_SESSION["username"];
-        }
-
-        // Close statement
-        mysqli_stmt_close($stmt);
+    if ($stmt->execute()) {
+        // Password updated successfully. Destroy the session, and redirect to login page
+        session_destroy();
+        header("location: index.php");
+        exit();
+    } else {
+        echo $_SESSION["username"];
     }
-
-    mysqli_close($link);
-}
-
-class DotEnv
-{
-	/**
-	 * The directory where the .env file can be located.
-	 *
-	 * @var string
-	 */
-	protected $path;
-
-
-	public function __construct(string $path)
-	{
-		if(!file_exists($path)) {
-			throw new \InvalidArgumentException(sprintf('%s does not exist', $path));
-		}
-		$this->path = $path;
-	}
-
-	public function load() :void
-	{
-		if (!is_readable($this->path)) {
-			throw new \RuntimeException(sprintf('%s file is not readable', $this->path));
-		}
-
-		$lines = file($this->path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-		foreach ($lines as $line) {
-
-			if (strpos(trim($line), '#') === 0) {
-				continue;
-			}
-
-			list($name, $value) = explode('=', $line, 2);
-			$name = trim($name);
-			$value = trim($value);
-
-			if (!array_key_exists($name, $_SERVER) && !array_key_exists($name, $_ENV)) {
-				putenv(sprintf('%s=%s', $name, $value));
-				$_ENV[$name] = $value;
-				$_SERVER[$name] = $value;
-			}
-		}
-	}
 }

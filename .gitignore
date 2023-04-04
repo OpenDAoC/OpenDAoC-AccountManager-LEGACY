@@ -1,2 +1,11 @@
-/.env
-/.idea
+### Composer ###
+composer.phar
+/vendor/
+
+### dotenv ###
+.env
+
+### IDEs ###
+.idea
+.vs
+.vscode
