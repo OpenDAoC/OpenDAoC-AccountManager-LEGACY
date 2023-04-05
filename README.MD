@@ -1,21 +1,24 @@
 # OpenDAoC Account Manager
 
-This is the code of the [OpenDAoC Account Manager](https://account.atlasfreeshard.com).
+This is the code of the [OpenDAoC Account Manager](https://account.opendaoc.com).
 
 
 
 ## Deployment
 
-To deploy this project, clone this repository update the dependencies with
+To deploy this project:
+
+- Clone the repository
+- Update the dependencies with
 
 ```bash
   composer update
 ```
 
-Rename `.env.example` to `.env` and fill out the relevant settings.
+- Rename `.env.example` to `.env` and fill out the relevant settings.
 
-
-A list of prohibited characters for usernames and password is defined in `config.php`.
+### Notes
+A list of prohibited characters for usernames and password is defined in `config.php`
 
 
 ## License
