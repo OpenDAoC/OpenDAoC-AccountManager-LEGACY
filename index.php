@@ -18,9 +18,22 @@ require __DIR__ . "/config.php";
 
 $request_method = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : null;
 
-if ($request_method == "POST") {
-    // ...
-    // Validate credentials
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    // Check if username is empty
+    if (empty(trim($_POST["username"]))) {
+        $username_err = "Please enter username.";
+    } else {
+        $username = trim($_POST["username"]);
+    }
+
+    // Check if password is empty
+    if (empty(trim($_POST["password"]))) {
+        $password_err = "Please enter your password.";
+    } else {
+        $password = trim($_POST["password"]);
+    }
+
     if (empty($username_err) && empty($password_err)) {
         // Prepare a select statement
         $sql = "SELECT Account_ID, Name, Password, DiscordID FROM account WHERE Name = :username";
