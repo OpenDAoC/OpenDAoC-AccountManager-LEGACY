@@ -1,8 +1,8 @@
 # OpenDAoC Account Manager
 
-This is the code of the [OpenDAoC Account Manager](https://account.opendaoc.com).
-
-
+# WARNING - DEPRECATED
+This is the code of the **LEGACY** OpenDAoC Account Manager written in PHP.  
+We recommend migrating (painlessly) to the [new version](https://github.com/OpenDAoC/opendaoc-accountmanager)
 
 ## Deployment
 
